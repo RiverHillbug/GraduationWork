@@ -15726,18 +15726,6 @@ PrefabInstance:
       propertyPath: m_Agent
       value: 
       objectReference: {fileID: 632499727091212918}
-    - target: {fileID: 1334884636043715065, guid: 413a14dd3c1eb5c4b846a05fb5c80bb3, type: 3}
-      propertyPath: m_VisionDistance
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 1334884636043715065, guid: 413a14dd3c1eb5c4b846a05fb5c80bb3, type: 3}
-      propertyPath: m_TargetLayer.m_Bits
-      value: 256
-      objectReference: {fileID: 0}
-    - target: {fileID: 1334884636043715065, guid: 413a14dd3c1eb5c4b846a05fb5c80bb3, type: 3}
-      propertyPath: m_ObstacleLayer.m_Bits
-      value: 64
-      objectReference: {fileID: 0}
     - target: {fileID: 7399525926084713791, guid: 413a14dd3c1eb5c4b846a05fb5c80bb3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.3

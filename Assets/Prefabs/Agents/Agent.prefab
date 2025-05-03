@@ -146,10 +146,10 @@ MonoBehaviour:
   m_FieldOfView: 100
   m_ObstacleLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_TargetLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
 --- !u!114 &1621232664816532435
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,6 +162,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31f8a9b4c03811f4a85f672287f8831a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Vision: {fileID: 5782712182375252686}
+  m_EnvironmentLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  m_TargetsLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &6897094046128205864
 GameObject:
   m_ObjectHideFlags: 0
@@ -281,7 +288,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3652650424661430219}
   - component: {fileID: 5782712182375252686}
-  - component: {fileID: 5249040030481852767}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -346,20 +352,12 @@ Camera:
     m_Bits: 320
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
-  m_TargetDisplay: 0
+  m_TargetDisplay: 1
   m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
+  m_HDR: 0
+  m_AllowMSAA: 0
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &5249040030481852767
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8055433380591348522}
-  m_Enabled: 1
