@@ -1,5 +1,6 @@
 # GraduationWork
 In this project, I am developing an alternative method for line-of-sight calculations, utilizing depth maps instead of raycasting.
+
 To achieve this, agents have a camera that renders depth maps of the environment and the vision targets. Then I compare the two textures pixel-by-pixel to determine if there is any point where the target is not blocked by the environment, and therefore is detectable by the agent.
 After I am done with the implementation, I will analyse the performance of this method.
 
