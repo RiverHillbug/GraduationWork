@@ -13,13 +13,13 @@ public class WanderBehavior : MonoBehaviour
 	private float m_Timer;
 	private float m_WanderTimer;
 
-	void Start()
+	private void Start()
 	{
 		WanderToRandomPoint();
 		SetRandomWanderTime();
 	}
 
-	void Update()
+	private void Update()
 	{
 		m_Timer += Time.deltaTime;
 
@@ -32,13 +32,13 @@ public class WanderBehavior : MonoBehaviour
 		RotateAgentTowardsDestination();
 	}
 
-	void SetRandomWanderTime()
+	private void SetRandomWanderTime()
 	{
 		m_WanderTimer = Random.Range(m_MinWanderTime, m_MaxWanderTime);
 		m_Timer = 0.0f;
 	}
 
-	void WanderToRandomPoint()
+	private void WanderToRandomPoint()
 	{
 		Vector3 randomDirection = Random.insideUnitSphere * m_WanderRadius;
 		randomDirection += transform.position;
@@ -50,9 +50,12 @@ public class WanderBehavior : MonoBehaviour
 		}
 	}
 
-	void RotateAgentTowardsDestination()
+	private void RotateAgentTowardsDestination()
 	{
 		Vector3 directionToTarget = m_Agent.steeringTarget - transform.position;
+		if (directionToTarget.sqrMagnitude <= 0.5f)
+			return;
+
 		Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
 		transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, m_RotationSpeed * Time.deltaTime);
 	}

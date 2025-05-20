@@ -6,45 +6,60 @@ public class RaycastVisionDetection : MonoBehaviour
 {
 	[SerializeField]
 	private float m_VisionDistance = 50.0f;
+
 	[SerializeField]
 	private float m_FieldOfView = 100.0f;
+
+	[SerializeField]
+	private Vector3 m_EyeLevel = Vector3.one;
+
 	[SerializeField]
 	private LayerMask m_ObstacleLayer;
+
 	[SerializeField]
 	private LayerMask m_TargetLayer;
 
-	private readonly List<Transform> m_VisionTargetsInRange = new();
+	private readonly List<VisionTarget> m_VisionTargetsInRange = new();
 
-	private void Update()
+	public bool DetectVision()
 	{
 		DetectVisionTargetsInRange();
-
-		if (m_VisionTargetsInRange.Count == 0)
-			return;
-
-		DetectVision();
+		return RaycastOnTargetsInRange();
 	}
 
 	private void DetectVisionTargetsInRange()
 	{
 		m_VisionTargetsInRange.Clear();
-		m_VisionTargetsInRange.AddRange(GameManager.Instance.GetVisionTargets());
+		m_VisionTargetsInRange.AddRange(GameManager.Instance.VisionTargets);
 
 		for (int i = m_VisionTargetsInRange.Count - 1; i >= 0; --i)
 		{
-			if (Vector3.Distance(transform.position, m_VisionTargetsInRange[i].position) > m_VisionDistance ||
-				Vector3.Angle(transform.position, m_VisionTargetsInRange[i].position) > m_FieldOfView * 0.5f)
+			if (Vector3.Distance(transform.position, m_VisionTargetsInRange[i].transform.position) > m_VisionDistance ||
+				Vector3.Angle(transform.position, m_VisionTargetsInRange[i].transform.position) > m_FieldOfView * 0.5f)
 				m_VisionTargetsInRange.RemoveAt(i);
 		}
 	}
 
-	private void DetectVision()
+	private bool RaycastOnTargetsInRange()
 	{
-		if (!Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, m_VisionDistance, m_TargetLayer))
-			return;
+		bool hasDetectedATarget = false;
 
-		float angle = Vector3.Angle(transform.forward, hit.transform.position - transform.position);
-		if (angle < m_FieldOfView / 2)
-			Debug.Log("Target detected: " + hit.transform.name);
+		foreach (VisionTarget target in m_VisionTargetsInRange)
+		{
+			IReadOnlyList<Transform> raycastTargets = target.RaycastTargets;
+
+			foreach (Transform raycastTarget in raycastTargets)
+			{
+				if (Physics.Raycast(transform.position + m_EyeLevel, raycastTarget.position, out RaycastHit hit, m_VisionDistance, m_TargetLayer))
+				{
+					Debug.Log($"Target detected: {target.name}");
+					hasDetectedATarget = true;
+
+					break;
+				}
+			}
+		}
+
+		return hasDetectedATarget;
 	}
 }
