@@ -11,9 +11,6 @@ public class RaycastVisionDetection : MonoBehaviour
 	private float m_FieldOfView = 100.0f;
 
 	[SerializeField]
-	private Vector3 m_EyeLevel = Vector3.one;
-
-	[SerializeField]
 	private LayerMask m_ObstacleLayer;
 
 	[SerializeField]
@@ -21,10 +18,10 @@ public class RaycastVisionDetection : MonoBehaviour
 
 	private readonly List<VisionTarget> m_VisionTargetsInRange = new();
 
-	public bool DetectVision()
+	public bool DetectVision(VisionAgent agent)
 	{
 		DetectVisionTargetsInRange();
-		return RaycastOnTargetsInRange();
+		return RaycastOnTargetsInRange(agent);
 	}
 
 	private void DetectVisionTargetsInRange()
@@ -40,7 +37,7 @@ public class RaycastVisionDetection : MonoBehaviour
 		}
 	}
 
-	private bool RaycastOnTargetsInRange()
+	private bool RaycastOnTargetsInRange(VisionAgent agent)
 	{
 		bool hasDetectedATarget = false;
 
@@ -50,7 +47,7 @@ public class RaycastVisionDetection : MonoBehaviour
 
 			foreach (Transform raycastTarget in raycastTargets)
 			{
-				if (Physics.Raycast(transform.position + m_EyeLevel, raycastTarget.position, out RaycastHit hit, m_VisionDistance, m_TargetLayer))
+				if (Physics.Raycast(agent.EyeSocket.position, raycastTarget.position, out RaycastHit hit, m_VisionDistance, m_TargetLayer))
 				{
 					Debug.Log($"Target detected: {target.name}");
 					hasDetectedATarget = true;

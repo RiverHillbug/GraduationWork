@@ -16,8 +16,6 @@ public class Test_DepthMapVision
 	[UnityTest]
 	public IEnumerator Test_UnobstructedVision()
 	{
-		yield return null;
-
 		VisionAgent agent = GameObject.Find("Agent").GetComponent<VisionAgent>();
 		Transform target = GameObject.Find("Target").transform;
 		Transform testRoot = GameObject.Find("Test_Unobstructed").transform;
@@ -48,8 +46,6 @@ public class Test_DepthMapVision
 	[UnityTest]
 	public IEnumerator Test_ObstructedVision()
 	{
-		yield return null;
-
 		VisionAgent agent = GameObject.Find("Agent").GetComponent<VisionAgent>();
 		Transform target = GameObject.Find("Target").transform;
 		Transform testRoot = GameObject.Find("Test_Obstructed").transform;
@@ -87,8 +83,6 @@ public class Test_DepthMapVision
 	[UnityTest]
 	public IEnumerator Test_PartiallyObstructedVision()
 	{
-		yield return null;
-
 		VisionAgent agent = GameObject.Find("Agent").GetComponent<VisionAgent>();
 		Transform target = GameObject.Find("Target").transform;
 		Transform testRoot = GameObject.Find("Test_PartiallyObstructed").transform;

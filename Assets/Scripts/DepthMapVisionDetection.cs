@@ -43,8 +43,8 @@ public class DepthMapVisionDetection : MonoBehaviour
 		m_Camera.SetReplacementShader(m_DepthShader, replacementTag: string.Empty);
 		m_Camera.enabled = false;
 
-		int textureWidth = Mathf.RoundToInt(Screen.width * m_TexturesSizeMultiplier);
-		int textureHeight = Mathf.RoundToInt(Screen.height * m_TexturesSizeMultiplier);
+		int textureWidth = Mathf.RoundToInt(m_Camera.pixelWidth * m_TexturesSizeMultiplier);
+		int textureHeight = Mathf.RoundToInt(m_Camera.pixelHeight * m_TexturesSizeMultiplier);
 
 		m_TargetsDepthTexture = new RenderTexture(textureWidth, textureHeight, 24);
 		m_EnvironmentDepthTexture = new RenderTexture(textureWidth, textureHeight, 24);
@@ -118,6 +118,10 @@ public class DepthMapVisionDetection : MonoBehaviour
 		RenderTexture.active = m_EnvironmentDepthTexture;
 		m_EnvironmentDepthMap.ReadPixels(new Rect(0, 0, m_EnvironmentDepthTexture.width, m_EnvironmentDepthTexture.height), 0, 0);
 		m_EnvironmentDepthMap.Apply();
+
+		/*byte[] bytes = m_EnvironmentDepthMap.EncodeToPNG();
+		File.WriteAllBytes(Application.dataPath + "/Environment.png", bytes);*/
+
 		RenderTexture.active = null;
 		m_Camera.targetTexture = null;
 	}
@@ -133,7 +137,7 @@ public class DepthMapVisionDetection : MonoBehaviour
 		m_TargetsDepthMap.Apply();
 
 		/*byte[] bytes = m_TargetsDepthMap.EncodeToPNG();
-		File.WriteAllBytes(Application.dataPath + "/Before.png", bytes);*/
+		File.WriteAllBytes(Application.dataPath + "/Targets.png", bytes);*/
 
 		RenderTexture.active = null;
 		m_Camera.targetTexture = null;
@@ -153,7 +157,7 @@ public class DepthMapVisionDetection : MonoBehaviour
 				if (targetDepth < envDepth)
 				{
 					RaycastOnTarget((float)x / m_TargetsDepthMap.width, (float)y / m_TargetsDepthMap.height, targetDepth * (m_Camera.farClipPlane - m_Camera.nearClipPlane));
-					EraseTargetShape(x, y);
+					//EraseTargetShape(x, y); // Needs some fixing (make it not recursive, mostly)
 				}
 			}
 		}
@@ -163,8 +167,11 @@ public class DepthMapVisionDetection : MonoBehaviour
 
 	private void RaycastOnTarget(float x, float y, float distance)
 	{
+		Ray ray = m_Camera.ViewportPointToRay(new Vector3(x, y));
+		//Debug.DrawLine(ray.origin, ray.origin + (ray.direction * (distance * 2.0f)), Color.red);
+
 		// The distance is not exact, since the depth map is based on near clip plane, instead of camera position, so we can't use it with precision
-		if (!Physics.Raycast(m_Camera.ViewportPointToRay(new Vector3(x, y)), out RaycastHit hit, distance * 2.0f, m_TargetsLayer))
+		if (!Physics.Raycast(ray, out RaycastHit hit, distance * 2.0f, m_TargetsLayer))
 			return;
 
 		foreach (VisionTarget target in m_VisionTargetsInRange)
@@ -177,7 +184,6 @@ public class DepthMapVisionDetection : MonoBehaviour
 				m_CurrentlyDetectedTargets.Add(target);
 
 				Debug.Log($"Target detected: {target.name}");
-				//Debug.DrawLine(ray.origin, hit.point, Color.red);
 			}
 
 			break;
@@ -186,64 +192,75 @@ public class DepthMapVisionDetection : MonoBehaviour
 
 	private void EraseTargetShape(int x, int y)
 	{
+		// Closed list are the pixels that have or are being treated already.
+		// It's a hashset because we just need to know that they are in there, we don't iterate over them from it.
 		HashSet<Vector2Int> closedList = HashSetPool<Vector2Int>.Get();
 
-		EraseSurroundingSimilarPixels(new Vector2Int(x, y), closedList);
+		float startingDepth = m_TargetsDepthMap.GetPixel(x, y).r;
+		EraseSurroundingSimilarPixels(new(x, y), startingDepth, ref closedList);
 		m_TargetsDepthMap.SetPixel(x, y, Color.white);
 
+		closedList.Clear();
 		HashSetPool<Vector2Int>.Release(closedList);
 
 		/*byte[] bytesAfter = m_TargetsDepthMap.EncodeToPNG();
 		File.WriteAllBytes(Application.dataPath + "/After.png", bytesAfter);*/
 	}
 
-	private void EraseSurroundingSimilarPixels(Vector2Int startingPixel, HashSet<Vector2Int> closedList)
+	private void EraseSurroundingSimilarPixels(Vector2Int startingPixel,float startingDepth, ref HashSet<Vector2Int> closedList)
 	{
 		const float depthDifferenceToConsiderDifferentEntity = 0.01f;
-
-		List<Vector2Int> openList = ListPool<Vector2Int>.Get();
-
-		float startingDepth = m_TargetsDepthMap.GetPixel(startingPixel.x, startingPixel.y).r;
 
 		Vector2Int right = new(startingPixel.x + 1, startingPixel.y);
 		if (!closedList.Contains(right) && startingPixel.x + 1 < m_TargetsDepthMap.width)
 		{
-			openList.Add(right);
 			closedList.Add(right);
+
+			float depth = m_TargetsDepthMap.GetPixel(right.x, right.y).r;
+			if (Mathf.Abs(depth - startingDepth) <= depthDifferenceToConsiderDifferentEntity)
+			{
+				m_TargetsDepthMap.SetPixel(right.x, right.y, Color.white);
+				EraseSurroundingSimilarPixels(right, depth, ref closedList);
+			}
 		}
 
 		Vector2Int up = new(startingPixel.x, startingPixel.y + 1);
 		if (!closedList.Contains(up) && startingPixel.y + 1 < m_TargetsDepthMap.height)
 		{
-			openList.Add(up);
 			closedList.Add(up);
+
+			float depth = m_TargetsDepthMap.GetPixel(up.x, up.y).r;
+			if (Mathf.Abs(depth - startingDepth) <= depthDifferenceToConsiderDifferentEntity)
+			{
+				m_TargetsDepthMap.SetPixel(up.x, up.y, Color.white);
+				EraseSurroundingSimilarPixels(up, depth, ref closedList);
+			}
 		}
 
 		Vector2Int left = new(startingPixel.x - 1, startingPixel.y);
 		if (!closedList.Contains(left) && startingPixel.x - 1 >= 0)
 		{
-			openList.Add(left);
 			closedList.Add(left);
+
+			float depth = m_TargetsDepthMap.GetPixel(left.x, left.y).r;
+			if (Mathf.Abs(depth - startingDepth) <= depthDifferenceToConsiderDifferentEntity)
+			{
+				m_TargetsDepthMap.SetPixel(left.x, left.y, Color.white);
+				EraseSurroundingSimilarPixels(left, depth, ref closedList);
+			}
 		}
 
 		Vector2Int down = new(startingPixel.x, startingPixel.y - 1);
 		if (!closedList.Contains(down) && startingPixel.y - 1 >= 0)
 		{
-			openList.Add(down);
 			closedList.Add(down);
-		}
 
-		foreach (Vector2Int pixel in openList)
-		{
-			float depth = m_TargetsDepthMap.GetPixel(pixel.x, pixel.y).r;
-
-			if (Mathf.Abs(depth - startingDepth) >= depthDifferenceToConsiderDifferentEntity)
+			float depth = m_TargetsDepthMap.GetPixel(down.x, down.y).r;
+			if (Mathf.Abs(depth - startingDepth) <= depthDifferenceToConsiderDifferentEntity)
 			{
-				EraseSurroundingSimilarPixels(pixel, closedList);
-				m_TargetsDepthMap.SetPixel(pixel.x, pixel.y, Color.white);
+				m_TargetsDepthMap.SetPixel(down.x, down.y, Color.white);
+				EraseSurroundingSimilarPixels(down, depth, ref closedList);
 			}
 		}
-
-		ListPool<Vector2Int>.Release(openList);
 	}
 }
