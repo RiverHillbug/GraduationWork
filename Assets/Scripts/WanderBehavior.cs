@@ -32,6 +32,12 @@ public class WanderBehavior : MonoBehaviour
 		RotateAgentTowardsDestination();
 	}
 
+	public void Reset()
+	{
+		m_Agent.SetDestination(transform.position);
+		m_Timer = 0.0f;
+	}
+
 	private void SetRandomWanderTime()
 	{
 		m_WanderTimer = Random.Range(m_MinWanderTime, m_MaxWanderTime);

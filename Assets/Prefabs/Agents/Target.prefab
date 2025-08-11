@@ -1588,7 +1588,7 @@ GameObject:
   - component: {fileID: -8581831417248049731}
   - component: {fileID: 281700445225418413}
   m_Layer: 8
-  m_Name: Human_Blue
+  m_Name: Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1624,6 +1624,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7f106697dc1f7441b946d444d8bcc17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_WanderBehavior: {fileID: 5683787968262317153}
   m_RaycastTargets:
   - {fileID: 516598643235226825}
   - {fileID: 5858015301758344321}

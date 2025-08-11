@@ -52,6 +52,7 @@ MonoBehaviour:
   m_UseRaycastDetection: 0
   m_UpdateVisionEveryFrame: 1
   m_EyeSocket: {fileID: 2609303979178380078}
+  m_WanderBehavior: {fileID: 1068095372244587190}
 --- !u!114 &1334884636043715065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,7 +67,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_VisionDistance: 20
   m_FieldOfView: 60
-  m_EyeLevel: {x: 1, y: 1, z: 1}
   m_ObstacleLayer:
     serializedVersion: 2
     m_Bits: 192

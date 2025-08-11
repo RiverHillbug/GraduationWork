@@ -5,6 +5,9 @@ using UnityEngine;
 public class VisionTarget : MonoBehaviour
 {
 	[SerializeField]
+	private WanderBehavior m_WanderBehavior = null;
+
+	[SerializeField]
 	private List<Transform> m_RaycastTargets = new();
 	public IReadOnlyList<Transform> RaycastTargets => m_RaycastTargets;
 
@@ -20,5 +23,10 @@ public class VisionTarget : MonoBehaviour
 	public bool HasCollider(Collider collider)
 	{
 		return m_AllColliders.Contains(collider);
+	}
+
+	public void Reset()
+	{
+		m_WanderBehavior.Reset();
 	}
 }

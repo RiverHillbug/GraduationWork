@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Pool;
+using UnityEngine.Profiling;
 
 public class DepthMapVisionDetection : MonoBehaviour
 {
@@ -15,9 +17,6 @@ public class DepthMapVisionDetection : MonoBehaviour
 	[Tooltip("Textures will be the size of the screen multiplied by this number (lower number reduces precision but drastically increases performances)")]
 	[Range(0.01f, 1.0f)]
 	private float m_TexturesSizeMultiplier = 0.8f;
-
-	[SerializeField]
-	private int m_AgentsToCheckPerFrame = 1;
 
 	[SerializeField]
 	private LayerMask m_EnvironmentLayer = 0;
@@ -38,6 +37,8 @@ public class DepthMapVisionDetection : MonoBehaviour
 
 	private readonly List<VisionAgent> m_RegisteredAgents = new();
 	private int m_CurrentAgentIndex = 0;
+
+	private int m_AgentsToCheckPerFrame = 1;
 
 	private readonly List<VisionTarget> m_VisionTargetsInRange = new();
 	private readonly HashSet<VisionTarget> m_CurrentlyDetectedTargets = new();
@@ -88,6 +89,8 @@ public class DepthMapVisionDetection : MonoBehaviour
 		if (m_RegisteredAgents.Count == 0)
 			return;
 
+		Profiler.BeginSample("DepthMapVisionDetection");
+
 		for (int i = 0; i < m_AgentsToCheckPerFrame; ++i)
 		{
 			if (m_CurrentAgentIndex >= m_RegisteredAgents.Count)
@@ -96,6 +99,8 @@ public class DepthMapVisionDetection : MonoBehaviour
 			DetectVisionImmediate(m_RegisteredAgents[m_CurrentAgentIndex]);
 			++m_CurrentAgentIndex;
 		}
+
+		Profiler.EndSample();
 	}
 
 	public void RegisterAgentForVisionDetection(VisionAgent agent)
@@ -107,6 +112,11 @@ public class DepthMapVisionDetection : MonoBehaviour
 	public void UnregisterAgent(VisionAgent agent)
 	{
 		m_RegisteredAgents.Remove(agent);
+	}
+
+	public void SetAgentsToCheckPerFrame(int count)
+	{
+		m_AgentsToCheckPerFrame = Mathf.Clamp(count, 1, m_RegisteredAgents.Count);
 	}
 
 	/// <summary>
@@ -183,8 +193,6 @@ public class DepthMapVisionDetection : MonoBehaviour
 		m_AlreadyDetectedPixels.Clear();
 		m_AlreadyCheckedPixels.Clear();
 
-		int raycastsCount = 0;
-
 		for (int y = 0; y < m_EnvironmentDepthMap.height; ++y)
 		{
 			for (int x = 0; x < m_EnvironmentDepthMap.width; ++x)
@@ -197,16 +205,17 @@ public class DepthMapVisionDetection : MonoBehaviour
 
 				if (targetDepth < envDepth)
 				{
-					++raycastsCount;
+					//Profiler.EndSample();
+
 					RaycastOnTarget((float)x / m_TargetsDepthMap.width, (float)y / m_TargetsDepthMap.height, targetDepth * (m_Camera.farClipPlane - m_Camera.nearClipPlane));
 
 					if (m_UseShapeDetectionOptimization)
 						DetectShapePixels(x, y);
+
+					//Profiler.BeginSample("DepthMapVisionDetection");
 				}
 			}
 		}
-
-		Debug.Log($"Raycaughst {raycastsCount} times");
 
 		return m_CurrentlyDetectedTargets.Count > 0;
 	}
@@ -229,7 +238,7 @@ public class DepthMapVisionDetection : MonoBehaviour
 			{
 				m_CurrentlyDetectedTargets.Add(target);
 
-				Debug.Log($"Target detected: {target.name}");
+				//Debug.Log($"Target detected: {target.name}");
 			}
 
 			break;

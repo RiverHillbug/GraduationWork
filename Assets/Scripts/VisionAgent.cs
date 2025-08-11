@@ -15,6 +15,9 @@ public class VisionAgent : MonoBehaviour
 	[SerializeField]
 	private Transform m_EyeSocket = null;
 
+	[SerializeField]
+	private WanderBehavior m_WanderBehavior = null;
+
 	private DepthMapVisionDetection m_DepthMapVisionDetection = null;
 
 	public Transform EyeSocket => m_EyeSocket;
@@ -58,5 +61,10 @@ public class VisionAgent : MonoBehaviour
 			m_DepthMapVisionDetection.UnregisterAgent(this);
 		else
 			m_DepthMapVisionDetection.RegisterAgentForVisionDetection(this);
+	}
+
+	public void Reset()
+	{
+		m_WanderBehavior.Reset();
 	}
 }

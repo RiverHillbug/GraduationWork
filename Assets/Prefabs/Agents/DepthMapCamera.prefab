@@ -99,7 +99,6 @@ MonoBehaviour:
   m_Camera: {fileID: 8806801716543612586}
   m_DepthShader: {fileID: 4800000, guid: 8bf10c640ed7d024a9927c2faf0cd59c, type: 3}
   m_TexturesSizeMultiplier: 0.2
-  m_AgentsToCheckPerFrame: 1
   m_EnvironmentLayer:
     serializedVersion: 2
     m_Bits: 192

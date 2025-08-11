@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public class RaycastVisionDetection : MonoBehaviour
 {
@@ -20,8 +21,14 @@ public class RaycastVisionDetection : MonoBehaviour
 
 	public bool DetectVision(VisionAgent agent)
 	{
+		Profiler.BeginSample("RayCastVisionDetection");
+
 		DetectVisionTargetsInRange();
-		return RaycastOnTargetsInRange(agent);
+		bool foundAgent = RaycastOnTargetsInRange(agent);
+
+		Profiler.EndSample();
+
+		return foundAgent;
 	}
 
 	private void DetectVisionTargetsInRange()
@@ -49,7 +56,7 @@ public class RaycastVisionDetection : MonoBehaviour
 			{
 				if (Physics.Raycast(agent.EyeSocket.position, raycastTarget.position, out RaycastHit hit, m_VisionDistance, m_TargetLayer))
 				{
-					Debug.Log($"Target detected: {target.name}");
+					//Debug.Log($"Target detected: {target.name}");
 					hasDetectedATarget = true;
 
 					break;

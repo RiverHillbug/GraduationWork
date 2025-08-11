@@ -254,10 +254,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: DepthMapCamera
       objectReference: {fileID: 0}
-    - target: {fileID: 6788987658757643852, guid: ec9ea83aed2382944990b986e73185ee, type: 3}
-      propertyPath: m_TargetsDepthMap
-      value: 
-      objectReference: {fileID: 2800000, guid: 08aa2facc3ab3bc4db105ec4dbf5ab47, type: 3}
     - target: {fileID: 8508185170231202406, guid: ec9ea83aed2382944990b986e73185ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -303,6 +299,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec9ea83aed2382944990b986e73185ee, type: 3}
+--- !u!114 &241253347 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6788987658757643852, guid: ec9ea83aed2382944990b986e73185ee, type: 3}
+  m_PrefabInstance: {fileID: 241253346}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31f8a9b4c03811f4a85f672287f8831a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &276164527
 GameObject:
   m_ObjectHideFlags: 0
@@ -1139,9 +1146,11 @@ MonoBehaviour:
   m_AgentsAmount: 0
   m_TargetPrefab: {fileID: 0}
   m_TargetsContainer: {fileID: 0}
+  m_DepthMapDetection: {fileID: 241253347}
   m_TargetsAmount: 0
   m_SpawnZone: {fileID: 0}
   m_UseRaycastMethod: 0
+  m_AgentsToCheckPerFrame: 10
 --- !u!4 &1753104019
 Transform:
   m_ObjectHideFlags: 0

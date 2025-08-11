@@ -20,6 +20,9 @@ public class GameManager : MonoBehaviour
 	private Transform m_TargetsContainer = null;
 
 	[SerializeField]
+	private DepthMapVisionDetection m_DepthMapDetection = null;
+
+	[SerializeField]
 	private int m_TargetsAmount = 4;
 
 	[SerializeField]
@@ -27,6 +30,10 @@ public class GameManager : MonoBehaviour
 
 	[SerializeField]
 	private bool m_UseRaycastMethod = false;
+
+	[SerializeField]
+	[Min(1)]
+	private int m_AgentsToCheckPerFrame = 1;
 
 	private readonly List<VisionAgent> m_VisionAgents = new();
 	private readonly List<VisionTarget> m_VisionTargets = new();
@@ -44,10 +51,7 @@ public class GameManager : MonoBehaviour
 
 		Instance = this;
 		DontDestroyOnLoad(gameObject);
-	}
 
-	private void Start()
-	{
 		VisionAgent[] agents = FindObjectsByType<VisionAgent>(FindObjectsSortMode.None);
 		foreach (VisionAgent agent in agents)
 		{
@@ -56,24 +60,64 @@ public class GameManager : MonoBehaviour
 		}
 
 		m_VisionTargets.AddRange(FindObjectsByType<VisionTarget>(FindObjectsSortMode.None));
+	}
 
-		for (int i = m_VisionAgents.Count; i < m_AgentsAmount; ++i)
+	public void Initialize(int agentsAmount, int targetsAmount, bool useRaycast)
+	{
+		m_AgentsAmount = agentsAmount;
+		m_TargetsAmount = targetsAmount;
+		m_UseRaycastMethod = useRaycast;
+
+		for (int i = 0; i < m_AgentsAmount; ++i)
 		{
 			Vector3 randomPosition = GetRandomSpawnPosition();
 			Quaternion randomRotation = GetRandomSpawnRotation();
 
-			VisionAgent agent = Instantiate(m_AgentPrefab, randomPosition, randomRotation, m_AgentsContainer);
+			VisionAgent agent;
+
+			if (i >= m_VisionAgents.Count)
+			{
+				agent = Instantiate(m_AgentPrefab, randomPosition, randomRotation, m_AgentsContainer);
+				m_VisionAgents.Add(agent);
+			}
+			else
+			{
+				agent = m_VisionAgents[i];
+
+				agent.gameObject.SetActive(true);
+				agent.Reset();
+				agent.transform.SetPositionAndRotation(randomPosition, randomRotation);
+			}
+
 			agent.SetUseRaycastDetection(m_UseRaycastMethod);
-			m_VisionAgents.Add(agent);
 		}
 
-		for (int i = m_VisionTargets.Count; i < m_TargetsAmount; ++i)
+		for (int i = m_AgentsAmount; i < m_VisionAgents.Count; ++i)
+			m_VisionAgents[i].gameObject.SetActive(false);
+
+		for (int i = 0; i < m_TargetsAmount; ++i)
 		{
 			Vector3 randomPosition = GetRandomSpawnPosition();
 			Quaternion randomRotation = GetRandomSpawnRotation();
 
-			m_VisionTargets.Add(Instantiate(m_TargetPrefab, randomPosition, randomRotation, m_TargetsContainer));
+			if (i >= m_VisionTargets.Count)
+			{
+				m_VisionTargets.Add(Instantiate(m_TargetPrefab, randomPosition, randomRotation, m_TargetsContainer));
+			}
+			else
+			{
+				VisionTarget target = m_VisionTargets[i];
+
+				target.gameObject.SetActive(true);
+				target.Reset();
+				target.transform.SetPositionAndRotation(randomPosition, randomRotation);
+			}
 		}
+
+		for (int i = m_TargetsAmount; i < m_VisionTargets.Count; ++i)
+			m_VisionTargets[i].gameObject.SetActive(false);
+
+		m_DepthMapDetection.SetAgentsToCheckPerFrame(m_AgentsToCheckPerFrame);
 	}
 
 	private void OnDestroy()

@@ -2325,12 +2325,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AgentPrefab: {fileID: 379586953853775723, guid: 413a14dd3c1eb5c4b846a05fb5c80bb3, type: 3}
   m_AgentsContainer: {fileID: 1538095369}
-  m_AgentsAmount: 500
+  m_AgentsAmount: 10
   m_TargetPrefab: {fileID: 6915450723704203568, guid: 64db8d48fab1ceb43a8ee5d52643029a, type: 3}
   m_TargetsContainer: {fileID: 2097800196}
-  m_TargetsAmount: 100
+  m_DepthMapDetection: {fileID: 6429467757593871952}
+  m_TargetsAmount: 500
   m_SpawnZone: {fileID: 1004345486}
   m_UseRaycastMethod: 0
+  m_AgentsToCheckPerFrame: 1
 --- !u!4 &305543412
 Transform:
   m_ObjectHideFlags: 0
@@ -8691,6 +8693,69 @@ Transform:
   - {fileID: 931477590}
   - {fileID: 1759656257}
   m_Father: {fileID: 53444463}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1217266833
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1217266835}
+  - component: {fileID: 1217266834}
+  m_Layer: 0
+  m_Name: BenchmarkRunner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1217266834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1217266833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc0302787e2af7c4db4f30b52bb92eeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Parameters:
+  - Name: Low_Low
+    AgentsAmount: 10
+    TargetsAmount: 10
+    OnlyThis: 0
+  - Name: Low_High
+    AgentsAmount: 10
+    TargetsAmount: 300
+    OnlyThis: 0
+  - Name: High_Low
+    AgentsAmount: 300
+    TargetsAmount: 10
+    OnlyThis: 0
+  - Name: High_High
+    AgentsAmount: 300
+    TargetsAmount: 300
+    OnlyThis: 0
+  m_SampleDuration: 20
+  m_BenchmarksCount: 10
+--- !u!4 &1217266835
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1217266833}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1221406527
 PrefabInstance:
@@ -15201,14 +15266,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: DepthMapCamera
       objectReference: {fileID: 0}
-    - target: {fileID: 6788987658757643852, guid: ec9ea83aed2382944990b986e73185ee, type: 3}
-      propertyPath: m_TexturesSizeMultiplier
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6788987658757643852, guid: ec9ea83aed2382944990b986e73185ee, type: 3}
-      propertyPath: m_UseShapeDetectionOptimization
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8508185170231202406, guid: ec9ea83aed2382944990b986e73185ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: 72.98
@@ -15254,6 +15311,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec9ea83aed2382944990b986e73185ee, type: 3}
+--- !u!114 &6429467757593871952 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6788987658757643852, guid: ec9ea83aed2382944990b986e73185ee, type: 3}
+  m_PrefabInstance: {fileID: 6429467757593871951}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31f8a9b4c03811f4a85f672287f8831a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7721890696259053163
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15350,3 +15418,4 @@ SceneRoots:
   - {fileID: 1538095369}
   - {fileID: 2097800196}
   - {fileID: 1004345487}
+  - {fileID: 1217266835}
