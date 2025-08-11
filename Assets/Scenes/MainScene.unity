@@ -15201,6 +15201,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: DepthMapCamera
       objectReference: {fileID: 0}
+    - target: {fileID: 6788987658757643852, guid: ec9ea83aed2382944990b986e73185ee, type: 3}
+      propertyPath: m_TexturesSizeMultiplier
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6788987658757643852, guid: ec9ea83aed2382944990b986e73185ee, type: 3}
+      propertyPath: m_UseShapeDetectionOptimization
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8508185170231202406, guid: ec9ea83aed2382944990b986e73185ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: 72.98
