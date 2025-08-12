@@ -36,7 +36,7 @@ public class BenchmarkRunner : MonoBehaviour
 
 	private void Start()
 	{
-		m_UseRaycast = false;
+		m_UseRaycast = true;
 		m_OnlyOneTest = false;
 
 		for (int i = 0; i < m_Parameters.Count; ++i)
@@ -75,12 +75,6 @@ public class BenchmarkRunner : MonoBehaviour
 		if (m_TestTimer > 0.0f)
 			return;
 
-		if (m_OnlyOneTest)
-		{
-			StopTests();
-			return;
-		}
-
 		Debug.Log($"Test {m_Parameters[m_CurrentTestIndex].Name} iteration {m_CurrentBenchmarkIndex + 1} completed.");
 		++m_CurrentBenchmarkIndex;
 
@@ -89,11 +83,11 @@ public class BenchmarkRunner : MonoBehaviour
 			m_CurrentBenchmarkIndex = 0;
 			++m_CurrentTestIndex;
 
-			if (m_CurrentTestIndex >= m_Parameters.Count)
+			if (m_OnlyOneTest || m_CurrentTestIndex >= m_Parameters.Count)
 			{
 				Debug.Log($"All tests completed with {(m_UseRaycast ? "raycast" : "depth map")} method.");
 
-				if (m_UseRaycast)
+				if (m_OnlyOneTest || m_UseRaycast)
 				{
 					StopTests();
 					return;
