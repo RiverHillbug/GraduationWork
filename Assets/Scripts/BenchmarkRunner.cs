@@ -26,6 +26,9 @@ public class BenchmarkRunner : MonoBehaviour
 	[SerializeField]
 	private int m_BenchmarksCount = 10;
 
+	[SerializeField]
+	private bool m_StartWithRaycast = false;
+
 	private int m_CurrentTestIndex = 0;
 	private int m_CurrentBenchmarkIndex = 0;
 	private bool m_UseRaycast = false;
@@ -36,7 +39,7 @@ public class BenchmarkRunner : MonoBehaviour
 
 	private void Start()
 	{
-		m_UseRaycast = true;
+		m_UseRaycast = m_StartWithRaycast;
 		m_OnlyOneTest = false;
 
 		for (int i = 0; i < m_Parameters.Count; ++i)

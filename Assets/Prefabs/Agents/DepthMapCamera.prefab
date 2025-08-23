@@ -101,7 +101,7 @@ MonoBehaviour:
   m_TexturesSizeMultiplier: 0.2
   m_EnvironmentLayer:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 704
   m_TargetsLayer:
     serializedVersion: 2
     m_Bits: 256

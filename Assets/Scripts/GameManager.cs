@@ -37,9 +37,12 @@ public class GameManager : MonoBehaviour
 
 	private readonly List<VisionAgent> m_VisionAgents = new();
 	private readonly List<VisionTarget> m_VisionTargets = new();
-	public IReadOnlyList<VisionTarget> VisionTargets => m_VisionTargets;
+
+	private readonly Queue<VisionAgent> m_VisionDetectionQueue = new();
 
 	public static GameManager Instance { get; private set; }
+
+	public IReadOnlyList<VisionTarget> VisionTargets => m_VisionTargets;
 
 	private void Awake()
 	{
@@ -62,11 +65,20 @@ public class GameManager : MonoBehaviour
 		m_VisionTargets.AddRange(FindObjectsByType<VisionTarget>(FindObjectsSortMode.None));
 	}
 
+	private void Start()
+	{
+		BenchmarkRunner benchmarkRunner = FindAnyObjectByType<BenchmarkRunner>(FindObjectsInactive.Exclude);
+		if (benchmarkRunner == null || !benchmarkRunner.enabled)
+			Initialize(m_AgentsAmount, m_TargetsAmount, m_UseRaycastMethod);
+	}
+
 	public void Initialize(int agentsAmount, int targetsAmount, bool useRaycast)
 	{
 		m_AgentsAmount = agentsAmount;
 		m_TargetsAmount = targetsAmount;
 		m_UseRaycastMethod = useRaycast;
+
+		m_VisionDetectionQueue.Clear();
 
 		for (int i = 0; i < m_AgentsAmount; ++i)
 		{
@@ -90,6 +102,9 @@ public class GameManager : MonoBehaviour
 			}
 
 			agent.SetUseRaycastDetection(m_UseRaycastMethod);
+
+			if (m_UseRaycastMethod)
+				m_VisionDetectionQueue.Enqueue(agent);
 		}
 
 		for (int i = m_AgentsAmount; i < m_VisionAgents.Count; ++i)
@@ -134,6 +149,18 @@ public class GameManager : MonoBehaviour
 		{
 			if (target != null && target.gameObject != null)
 				Destroy(target.gameObject);
+		}
+	}
+
+	private void Update()
+	{
+		if (!m_UseRaycastMethod || m_VisionDetectionQueue.Count == 0)
+			return;
+
+		for (int i = 0; i < m_AgentsToCheckPerFrame; ++i)
+		{
+			m_VisionDetectionQueue.Peek().DetectVisionImmediate();
+			m_VisionDetectionQueue.Enqueue(m_VisionDetectionQueue.Dequeue());
 		}
 	}
 

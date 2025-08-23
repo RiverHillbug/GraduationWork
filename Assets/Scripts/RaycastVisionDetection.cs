@@ -12,10 +12,10 @@ public class RaycastVisionDetection : MonoBehaviour
 	private float m_FieldOfView = 100.0f;
 
 	[SerializeField]
-	private LayerMask m_ObstacleLayer;
+	private LayerMask m_RaycastLayer = 0;
 
 	[SerializeField]
-	private LayerMask m_TargetLayer;
+	private LayerMask m_TargetsLayer = 0;
 
 	private readonly List<VisionTarget> m_VisionTargetsInRange = new();
 
@@ -54,9 +54,9 @@ public class RaycastVisionDetection : MonoBehaviour
 
 			foreach (Transform raycastTarget in raycastTargets)
 			{
-				if (Physics.Raycast(agent.EyeSocket.position, raycastTarget.position, out RaycastHit hit, m_VisionDistance, m_TargetLayer))
+				if (Physics.Raycast(agent.EyeSocket.position, raycastTarget.position, out RaycastHit hit, m_VisionDistance, m_RaycastLayer) && (1 << hit.collider.gameObject.layer) == m_TargetsLayer.value)
 				{
-					//Debug.Log($"Target detected: {target.name}");
+					//Debug.Log($"Target {target.name} detected by agent {agent.name}");
 					hasDetectedATarget = true;
 
 					break;

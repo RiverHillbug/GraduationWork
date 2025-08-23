@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 1334884636043715065}
   - component: {fileID: 1068095372244587190}
   - component: {fileID: 6603510644357333220}
-  m_Layer: 0
+  - component: {fileID: 7931620423489442228}
+  m_Layer: 9
   m_Name: Agent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67,10 +68,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_VisionDistance: 20
   m_FieldOfView: 60
-  m_ObstacleLayer:
+  m_RaycastLayer:
     serializedVersion: 2
-    m_Bits: 192
-  m_TargetLayer:
+    m_Bits: 960
+  m_TargetsLayer:
     serializedVersion: 2
     m_Bits: 256
 --- !u!114 &1068095372244587190
@@ -112,6 +113,29 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!136 &7931620423489442228
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156654945703962238}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &6897094046128205864
 GameObject:
   m_ObjectHideFlags: 0

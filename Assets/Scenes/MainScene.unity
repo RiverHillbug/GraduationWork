@@ -8742,6 +8742,7 @@ MonoBehaviour:
     OnlyThis: 0
   m_SampleDuration: 20
   m_BenchmarksCount: 10
+  m_StartWithRaycast: 0
 --- !u!4 &1217266835
 Transform:
   m_ObjectHideFlags: 0

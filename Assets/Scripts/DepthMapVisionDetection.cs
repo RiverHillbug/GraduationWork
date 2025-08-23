@@ -205,14 +205,14 @@ public class DepthMapVisionDetection : MonoBehaviour
 
 				if (targetDepth < envDepth)
 				{
-					//Profiler.EndSample();
+					Profiler.EndSample();
 
 					RaycastOnTarget((float)x / m_TargetsDepthMap.width, (float)y / m_TargetsDepthMap.height, targetDepth * (m_Camera.farClipPlane - m_Camera.nearClipPlane));
 
 					if (m_UseShapeDetectionOptimization)
 						DetectShapePixels(x, y);
 
-					//Profiler.BeginSample("DepthMapVisionDetection");
+					Profiler.BeginSample("DepthMapVisionDetection");
 				}
 			}
 		}

@@ -36,12 +36,6 @@ public class VisionAgent : MonoBehaviour
 		m_DepthMapVisionDetection.UnregisterAgent(this);
 	}
 
-	private void Update()
-	{
-		if (m_UpdateVisionEveryFrame && m_UseRaycastDetection)
-			m_RaycastVisionDetection.DetectVision(this);
-	}
-
 	public bool DetectVisionImmediate()
 	{
 		return m_UseRaycastDetection ? m_RaycastVisionDetection.DetectVision(this) : m_DepthMapVisionDetection.DetectVisionImmediate(this);
